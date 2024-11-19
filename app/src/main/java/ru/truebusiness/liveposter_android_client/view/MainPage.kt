@@ -64,10 +64,10 @@ import ru.truebusiness.liveposter_android_client.view.viewmodel.EventsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 @Preview
-fun MainPage(navController: NavController = rememberNavController(), eventsViewModel: EventsViewModel = viewModel()) {
-
-    val tag = "MainPage"
-
+fun MainPage(
+    navController: NavController = rememberNavController(),
+    eventsViewModel: EventsViewModel = viewModel()
+) {
     val eventsState = eventsViewModel.events.observeAsState(emptyList())
     val events = eventsState.value
 
@@ -75,18 +75,6 @@ fun MainPage(navController: NavController = rememberNavController(), eventsViewM
 
     val selectedCategoryState = eventsViewModel.selectedCategory.observeAsState(EventCategory.ALL)
     val selectedCategory = selectedCategoryState.value
-
-    // эта штука будет отвечать за состояние списка событий
-    val listState = rememberLazyListState()
-    LaunchedEffect(listState) {
-        snapshotFlow { listState.layoutInfo.visibleItemsInfo.lastOrNull()?.index == events.size - 1 }
-            .collect { isEndOfList ->
-                if (isEndOfList && !isLoading.value) {
-                    Log.v(tag, ": loading new events...")
-                    eventsViewModel.loadEvents()
-                }
-            }
-    }
 
     Column(
         modifier = Modifier
@@ -137,7 +125,9 @@ fun MainPage(navController: NavController = rememberNavController(), eventsViewM
                         horizontalArrangement = Arrangement.End
                     ) {
                         IconButton(
-                            onClick = {},
+                            onClick = {
+                                navController.navigate("registration")
+                            },
                             modifier = Modifier
                                 .height(40.dp)
                                 .width(40.dp),
